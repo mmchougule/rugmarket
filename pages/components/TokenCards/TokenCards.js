@@ -10,9 +10,12 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`https://frontend-api.pump.fun/coins/${token.mint}`);
+      // const response = await fetch(`https://frontend-api.pump.fun/coins/${token.mint}`);
+      const proxyUrl = `/api/proxy?path=coins/${token.mint}`;
+      const response = await fetch(proxyUrl);
       const data = await response.json();
-      const candleStickResponse = await fetch(`https://frontend-api.pump.fun/candlesticks/${token.mint}?offset=0&limit=1000&timeframe=5`);
+      const candleStickProxyUrl = `/api/proxy?path=candlesticks/${token.mint}?offset=0&limit=10&timeframe=5`;
+      const candleStickResponse = await fetch(candleStickProxyUrl);
       const candleStickData = await candleStickResponse.json();
       const lastCandleStickData = candleStickData.length > 0 ? candleStickData[candleStickData.length - 1] : null;
       setCandleStickData(lastCandleStickData);

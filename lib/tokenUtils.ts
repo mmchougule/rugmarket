@@ -113,7 +113,8 @@ export const getTokenDetails = async (tokens: string[]): Promise<UniqueToken[]> 
   // const uniqueTokens = require('./unique_tokens.json');
   // const tokenDetails = uniqueTokens.filter((token: UniqueToken) => tokens.includes(token.mintAddress));
   const tokenDetails = await Promise.all(tokens.map(async (mintAddress: string) => {
-    const response = await fetch(`https://frontend-api.pump.fun/coins/${mintAddress}`);
+    const proxyUrl = `/api/proxy?path=coins/${mintAddress}`;
+    const response = await fetch(proxyUrl);
     const data = await response.json();
     return data;
   }));

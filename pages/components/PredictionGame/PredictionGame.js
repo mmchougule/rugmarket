@@ -27,11 +27,15 @@ const PredictionGame = ({ gameAddress }) => {
             const program = getProgram(wallet);
             const details = await fetchGameDetails(program, new PublicKey(gameAddress));
             setGameDetails(details);
-            const tokenIds = details.tokens.map(token => token.id.toString());
-            const topTokens = await getTokenDetails(tokenIds);
-            setTokenDetails(topTokens);
-            if (details.status.ended && gameDetails?.winningToken !== null) {
-                calculateWinners(details);
+
+            // token info doesn't change except for the market cap, we can update it later
+            if (!isPolling) {
+                const tokenIds = details.tokens.map(token => token.id.toString());
+                const topTokens = await getTokenDetails(tokenIds);
+                setTokenDetails(topTokens);
+                if (details.status.ended && gameDetails?.winningToken !== null) {
+                    calculateWinners(details);
+                }
             }
             
             // Check for new bets
@@ -43,9 +47,9 @@ const PredictionGame = ({ gameAddress }) => {
                         oldBet.token.toString() === bet.token.toString()
                     )
                 );
-                
+                console.log(newBets);
                 newBets.forEach(bet => {
-                    const token = topTokens.find(t => t.mint === bet.token.toString());
+                    const token = tokenDetails.find(t => t.mint === bet.token.toString());
                     addNotification(`Placed bet: ${(bet.amount.toNumber() / 1e9).toFixed(2)} SOL on ${token ? token.name : 'Token'}`);
                 });
             }
@@ -63,6 +67,10 @@ const PredictionGame = ({ gameAddress }) => {
             { id: Date.now(), message },
             ...prev.slice(0, 4) // Keep only the last 5 notifications
         ]);
+        // hide notification after 5 seconds
+        setTimeout(() => {
+            setNotifications(prev => prev.slice(1));
+        }, 5000);
     };
 
     const handleTokenSelect = (mintAddress) => {
@@ -132,7 +140,7 @@ const PredictionGame = ({ gameAddress }) => {
             </AnimatePresence>
 
             <div className={styles.header}>
-                <h1 className={styles.title}>Current Round: who will get rekt first?</h1>
+                <h1 className={styles.title}>who will get rekt first?</h1>
                 <span>Total bets: {gameDetails.bets.length}</span>
                 <div className={styles.gameInfo}>
                     <div className={styles.infoItem}>

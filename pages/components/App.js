@@ -3,14 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { listActiveGames, getProgram } from '../../lib/anchor-client';
-import GameDetails from './GameDetails/GameDetails';
-import Leaderboard from './Leaderboard/Leaderboard';
 import styles from './App.module.css';
 import PredictionGame from './PredictionGame/PredictionGame';
 import GameList from './GameList/GameList';
-const lamportsToSol = (lamports) => lamports / 10 ** 9;
-
-const gamePhases = ['betting', 'waiting', 'results'];
+import BetNotifications from './BetNotification/BetNotification';
 
 function AppContent() {
   const { wallet } = useWallet();
@@ -20,26 +16,54 @@ function AppContent() {
   const [totalPot, setTotalPot] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [showGameExplainer, setShowGameExplainer] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (wallet) {
       fetchActiveGames();
+      // check for new games added
+      const interval = setInterval(() => {
+        fetchActiveGames();
+      }, 10000);
+      return () => clearInterval(interval);
     }
   }, [wallet]);
 
+  const addNotification = (message) => {
+    setNotifications(prev => [
+        { id: Date.now(), message },
+        ...prev.slice(0, 4) // Keep only the last 5 notifications
+    ]);
+    // hide notification after 5 seconds
+    setTimeout(() => {
+      setNotifications(prev => prev.slice(1));
+    }, 5000);
+  };
+
   const fetchActiveGames = async () => {
     if (!wallet) return;
-
     try {
       const program = getProgram(wallet.publicKey);
       const games = await listActiveGames(program);
+      const newGame = games[games.length - 1];
+      if (activeGames.length < games.length) {
+        console.log(`in if ${games[games.length - 1]}`)
+        setSelectedGame(newGame);
+      }
+
+      if (selectedGame !== newGame) {
+        addNotification(`New game added: ${newGame.toString().slice(0, 4)}...${newGame.toString().slice(-4)}`);
+      }
+      console.log(selectedGame);
+      console.log(newGame);
+
       // const activeGames = games.sort((a, b) => b.timestamp - a.timestamp); // need to add date etc.
       setActiveGames(games);
       // if a new game is created, notify user and update active games
 
-      if (games.length > 0) {
-        setSelectedGame(games[games.length - 1]);
-      }
+      // if (games.length > 0) {
+      //   setSelectedGame(games[games.length - 1]);
+      // }
     } catch (error) {
       console.error("Error fetching active games:", error);
     }
@@ -81,6 +105,7 @@ function AppContent() {
           </motion.div>
         )}
       </AnimatePresence>
+      <BetNotifications notifications={notifications} />
 
       <main className={styles.mainContent}>
         {wallet ? (

@@ -27,7 +27,7 @@ export const fetchGameDetails = async (program: Program, gameAddress: PublicKey)
 };
 
 export const placeBet = async (program: Program, wallet: AnchorWallet, gameAddress: PublicKey, tokenId: PublicKey, amount: number) => {
-    try {console.log(amount);console.log(`here : ${new anchor.BN(amount)}`)
+    try {
       const tx = await program.methods
         .placeBet(tokenId, new anchor.BN(amount))
         .accounts({

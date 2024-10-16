@@ -73,7 +73,6 @@ const LastFinishedGame = ({ game }) => {
 };
 
 const HistoricalGames = ({ games, onSelectGame }) => {
-    console.log(games);
   return (
     <motion.div 
       className={styles.historicalGames}
@@ -84,7 +83,7 @@ const HistoricalGames = ({ games, onSelectGame }) => {
       <AnimatePresence>
         {games?.map((game, index) => (
           <motion.div
-            key={game.address}
+            key={index}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
