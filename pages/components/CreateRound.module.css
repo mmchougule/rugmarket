@@ -1,0 +1,52 @@
+/* components/CreateRound.module.css */
+.createRoundContainer {
+  background-color: rgba(0, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.createRoundContainer h2 {
+  color: #00FFFF;
+  margin-bottom: 15px;
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 5px;
+  color: #FFFFFF;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #00FFFF;
+  background-color: rgba(0, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-radius: 5px;
+}
+
+.createRoundContainer button {
+  background-color: #FF10F0;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.createRoundContainer button:hover {
+  background-color: #D100C7;
+}
+
+.createRoundContainer button:disabled {
+  background-color: #666666;
+  cursor: not-allowed;
+}
+

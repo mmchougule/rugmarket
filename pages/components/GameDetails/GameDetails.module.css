@@ -1,0 +1,183 @@
+.gameDetails {
+  background-color: #0f0f1e;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  margin: 0 auto;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00ff9d;
+}
+
+.mainContent {
+  display: flex;
+  gap: 20px;
+}
+
+.tokenSection {
+  display: flex;
+  /* following creates a vertical scrollbar */
+  /* flex-direction: column; */
+  gap: 20px;
+  flex: 1;
+}
+
+.betSection {
+  flex: 1;
+  background-color: rgba(30, 30, 63, 0.7);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
+}
+
+.gameInfo {
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+}
+.leaderboardSection {
+  flex: 1;
+  background-color: #1e1e3f;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.icon {
+  margin-right: 10px;
+  color: #00ff9d;
+}
+
+.betInputSection {
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
+}
+
+.quickBets {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.quickBets button {
+  flex: 1;
+  background-color: #00ff9d;
+  color: #0f0f1e;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.quickBets button:hover {
+  background-color: #00cc7d;
+}
+
+.betInput {
+  width: 94%;
+  /* width 100% is overflowing, fix */
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #00ff9d;
+  border-radius: 5px;
+  color: #ffffff;
+}
+
+.betConfirmation {
+  background-color: rgba(0, 255, 157, 0.1);
+  border: 1px solid #00ff9d;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #00ff9d;
+}
+
+.betButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #ff10f0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.betButton:hover {
+  background-color: #d100c7;
+}
+
+.betButton:disabled {
+  background-color: #666666;
+  cursor: not-allowed;
+}
+
+.leaderboardSection {
+  margin-top: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 15px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: #00ff9d;
+}
+
+.betSuccess {
+  /* position: fixed; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  background-color: rgba(0, 255, 157, 0.1);
+  border: 1px solid #00ff9d;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.betSuccessMessage {
+  color: #00ff9d;
+}
+
+.betSuccess a {
+  color: #00ff9d;
+  text-decoration: underline;
+}
+
+.betSuccess a:hover {
+  color: #00cc7d;
+}

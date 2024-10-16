@@ -1,0 +1,60 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(0, 255, 255, 0.1);
+  border-bottom: 2px solid #00FFFF;
+}
+
+.logo {
+  font-family: 'Monument Extended', sans-serif;
+  font-size: 24px;
+  color: #00FFFF;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navButton {
+  background-color: #FF10F0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navButton:hover {
+  background-color: #CCFF00;
+  color: #2E0854;
+  box-shadow: 0 0 15px rgba(204, 255, 0, 0.7);
+}
+
+.walletAddress {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #CCFF00;
+  background-color: rgba(46, 8, 84, 0.5);
+  padding: 5px 10px;
+  border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+  }
+}

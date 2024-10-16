@@ -1,0 +1,145 @@
+.tokenCard {
+  background: #1e1e2e;
+  border-radius: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #2d2d44;
+  display: flex;
+  flex-direction: column;
+}
+
+.tokenCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cardContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tokenName {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin: 0 0 5px 0;
+  text-align: center;
+}
+
+.tokenSymbol {
+  font-size: 14px;
+  color: #AAAAAA;
+}
+
+.tokenImage {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 10px 0;
+}
+
+.tokenChange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.tokenDetails {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.description {
+  font-size: 12px;
+  color: #AAAAAA;
+  margin: 10px 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.socialLinks {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.socialLinks a {
+  color: #FF6D9D;
+  margin: 0 5px;
+}
+
+.quickBets {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.quickBets button {
+  background-color: #FF10F0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.positive {
+  color: #4CAF50;
+}
+
+.negative {
+  color: #F44336;
+}
+
+@media (max-width: 768px) {
+  .cardContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .tokenCard {
+    padding: 10px;
+  }
+
+  .tokenName {
+    font-size: 16px;
+  }
+
+  .tokenSymbol {
+    font-size: 12px;
+  }
+
+  .tokenImage {
+    width: 50px;
+    height: 50px;
+  }
+
+  .description {
+    -webkit-line-clamp: 2;
+  }
+
+  .quickBets button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}

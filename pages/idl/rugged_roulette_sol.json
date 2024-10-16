@@ -1,0 +1,352 @@
+{
+  "version": "0.1.0",
+  "name": "rugged_roulette_sol",
+  "instructions": [
+    {
+      "name": "createGameSession",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gameList",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bettingDuration",
+          "type": "i64"
+        },
+        {
+          "name": "tokenIds",
+          "type": {
+            "vec": "publicKey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "placeBet",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tokenId",
+          "type": "publicKey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePrices",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "updates",
+          "type": {
+            "vec": {
+              "defined": "PriceUpdate"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "endGame",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tokenPrices",
+          "type": {
+            "vec": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "listActiveGames",
+      "accounts": [
+        {
+          "name": "gameList",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "vec": "publicKey"
+      }
+    },
+    {
+      "name": "initializeGameList",
+      "accounts": [
+        {
+          "name": "gameList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "GameList",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "games",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "startTime",
+            "type": "i64"
+          },
+          {
+            "name": "endTime",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "GameStatus"
+            }
+          },
+          {
+            "name": "tokens",
+            "type": {
+              "vec": {
+                "defined": "TokenInfo"
+              }
+            }
+          },
+          {
+            "name": "treasury",
+            "type": "u64"
+          },
+          {
+            "name": "bets",
+            "type": {
+              "vec": {
+                "defined": "Bet"
+              }
+            }
+          },
+          {
+            "name": "winningToken",
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "TokenInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "publicKey"
+          },
+          {
+            "name": "price",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "publicKey"
+          },
+          {
+            "name": "token",
+            "type": "publicKey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceUpdate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tokenId",
+            "type": "publicKey"
+          },
+          {
+            "name": "price",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "PricesUpdated"
+          },
+          {
+            "name": "Ended"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "GameNotActive",
+      "msg": "Game is not active"
+    },
+    {
+      "code": 6001,
+      "name": "BettingPeriodEnded",
+      "msg": "Betting period has ended"
+    },
+    {
+      "code": 6002,
+      "name": "BettingPeriodNotEnded",
+      "msg": "Betting period has not ended yet"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidToken",
+      "msg": "Invalid token"
+    },
+    {
+      "code": 6004,
+      "name": "NoTokens",
+      "msg": "No tokens in the game"
+    },
+    {
+      "code": 6005,
+      "name": "NoWinningBets",
+      "msg": "No winning bets"
+    },
+    {
+      "code": 6006,
+      "name": "WinnerNotFound",
+      "msg": "Winner not found"
+    },
+    {
+      "code": 6007,
+      "name": "PricesNotUpdated",
+      "msg": "Prices have not been updated"
+    },
+    {
+      "code": 6008,
+      "name": "GameNotEnded",
+      "msg": "Game has not ended yet"
+    },
+    {
+      "code": 6009,
+      "name": "GameAlreadyEnded",
+      "msg": "Game has already ended"
+    }
+  ]
+}

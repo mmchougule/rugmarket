@@ -1,0 +1,49 @@
+.dailyChallenge {
+  grid-column: span 12;
+  background-color: rgba(255, 16, 240, 0.1);
+  border: 2px solid #FF10F0;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+.title {
+  font-family: 'Monument Extended', sans-serif;
+  color: #FF10F0;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.reward {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.rewardText {
+  font-weight: bold;
+}
+
+.rewardAmount {
+  color: #CCFF00;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 16, 240, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 16, 240, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 16, 240, 0);
+  }
+}
