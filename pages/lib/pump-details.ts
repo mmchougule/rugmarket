@@ -15,7 +15,7 @@ const requestOptions = {
    redirect: "follow"
 };
 
-fetch("https://streaming.bitquery.io/eap", requestOptions)
+fetch("https://streaming.bitquery.io/eap", {})
    .then((response) => response.text())
    .then((result) => console.log(result))
    .catch((error) => console.error(error));
