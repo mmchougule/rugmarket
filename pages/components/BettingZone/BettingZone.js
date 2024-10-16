@@ -29,10 +29,10 @@ const BettingZone = ({ bettingTokens, betAmount, setBetAmount, onBet, wallet }) 
     >
       <h2>Betting Zone</h2>
       <div className={styles.dropZone}>
-        {bettingTokens.length === 0 ? (
+        {bettingTokens?.length === 0 ? (
           <p>Drag tokens here to bet</p>
         ) : (
-          bettingTokens.map((token) => (
+          bettingTokens?.map((token) => (
             <div key={token.id} className={styles.betToken}>
               {token.name}
             </div>

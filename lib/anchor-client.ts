@@ -2,7 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Connection, PublicKey, SystemProgram, Keypair, Transaction } from "@solana/web3.js";
 import { AnchorProvider, Program } from '@coral-xyz/anchor';
 import { AnchorWallet } from '@solana/wallet-adapter-react';
-import idl from '../idl/rugged_roulette_sol.json';
+import idl from '../pages/idl/rugged_roulette_sol.json';
 
 const programID = new PublicKey("EVcajMJuF9uUrTg96PKW39tsQL5RyDpRZAZk1CUrRrwX");
 const RPC = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';

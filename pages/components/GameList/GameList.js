@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './GameList.module.css';
-import { listActiveGames } from '../../lib/anchor-client';
+import { listActiveGames } from '../../../lib/anchor-client';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 const GameList = ({ games, onSelectGame }) => {
@@ -82,7 +82,7 @@ const HistoricalGames = ({ games, onSelectGame }) => {
       transition={{ duration: 0.5, delay: 0.4 }}
     >
       <AnimatePresence>
-        {games.map((game, index) => (
+        {games?.map((game, index) => (
           <motion.div
             key={game.address}
             initial={{ opacity: 0, x: -20 }}

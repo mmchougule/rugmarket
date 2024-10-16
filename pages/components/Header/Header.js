@@ -33,7 +33,7 @@ const Header = () => {
           </>
         ) : (
           // <DynamicWidget />
-          <button className={styles.navButton} onClick={showAuthFlow}>
+          <button className={styles.navButton}>
             Connect Wallet
           </button>
         )}

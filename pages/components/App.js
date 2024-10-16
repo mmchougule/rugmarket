@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { listActiveGames, getProgram } from '../lib/anchor-client';
+import { listActiveGames, getProgram } from '../../lib/anchor-client';
 import GameDetails from './GameDetails/GameDetails';
 import Leaderboard from './Leaderboard/Leaderboard';
 import styles from './App.module.css';
-import { TokenSwiper } from './TokenSwiper';
-import { LiveFeed } from './LiveFeed';
 import PredictionGame from './PredictionGame/PredictionGame';
-import { TokenRace } from './TokenRace';
-import { GamePhaseIndicator } from './GamePhaseIndicator';
 import GameList from './GameList/GameList';
 const lamportsToSol = (lamports) => lamports / 10 ** 9;
 

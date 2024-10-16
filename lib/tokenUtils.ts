@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import pumpTokensData from './pumptokens.json';
+import pumpTokensData from '../pages/utils/pumptokens.json';
 
 interface TokenDetails {
   name: string;
@@ -141,7 +141,7 @@ export const getTokenDetails = async (tokens: string[]): Promise<UniqueToken[]> 
 export const getTopPumpTokens = (count: number = 10): UniqueToken[] => {
   const tokens = new Set<UniqueToken>();
   // read from unique_tokens.json
-  const uniqueTokens = require('./unique_tokens.json');
+  const uniqueTokens = require('../pages/utils/unique_tokens.json');
   uniqueTokens.forEach((token: UniqueToken) => {
     tokens.add(token);
   });

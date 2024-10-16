@@ -1,7 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Connection, PublicKey, SystemProgram, Keypair } from "@solana/web3.js";
 import fs from 'fs';
-import { getProgram } from "../pages/lib/anchor-client";
+import { getProgram } from "../lib/anchor-client";
 async function main() {
     const wallet = new anchor.Wallet(Keypair.fromSecretKey(
         Buffer.from(JSON.parse(fs.readFileSync('/Users/mayurchougule/rugroulette/keypair.json', 'utf-8')))

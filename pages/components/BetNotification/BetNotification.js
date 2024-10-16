@@ -7,7 +7,7 @@ const BetNotifications = ({ notifications }) => {
   return (
     <div className={styles.notificationContainer}>
       <AnimatePresence>
-        {notifications.map((notification, index) => (
+        {notifications?.map((notification, index) => (
           <motion.div
             key={notification.id}
             className={styles.notification}

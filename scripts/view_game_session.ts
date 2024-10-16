@@ -3,7 +3,7 @@ import { Program, AnchorProvider, Idl } from "@coral-xyz/anchor";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import * as toml from 'toml';
 import fs from 'fs';
-import { getProgram } from "../pages/lib/anchor-client";
+import { getProgram } from "../lib/anchor-client";
 
 
 async function main() {

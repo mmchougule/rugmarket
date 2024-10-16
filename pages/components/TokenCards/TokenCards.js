@@ -20,7 +20,7 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner }) => {
     };
 
     fetchData();
-  }, [token.mint]);
+  }, [token]);
 
   if (!currentData || !candleStickData) return <div>Loading...</div>;
 

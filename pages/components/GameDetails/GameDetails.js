@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PublicKey } from '@solana/web3.js';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { fetchGameDetails, placeBet, getProgram } from '../../lib/anchor-client';
-import { getTokenDetails } from '../../utils/tokenUtils';
+import { fetchGameDetails, placeBet, getProgram } from '../../../lib/anchor-client';
+import { getTokenDetails } from '../../../lib/tokenUtils';
 import GameTimer from '../GameTimer/GameTimer';
 import styles from './GameDetails.module.css';
 import { Clock, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
-import TokenCard from '../TokenCards/TokenCards';
 import Leaderboard from '../Leaderboard/Leaderboard';
 
 const lamportsToSol = (lamports) => lamports / 10 ** 9;

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { createGameSession } from '../lib/anchor-client';
+import { createGameSession } from '../../lib/anchor-client';
 import styles from './CreateRound.module.css';
 
 const CreateRound = ({ onRoundCreated }) => {
