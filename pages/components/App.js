@@ -29,9 +29,9 @@ function AppContent() {
     }
   }, [wallet]);
 
-  const addNotification = (message) => {
+  const addNotification = (message, gameAddress) => {
     setNotifications(prev => [
-        { id: Date.now(), message },
+        { id: Date.now(), message, gameAddress },
         ...prev.slice(0, 4) // Keep only the last 5 notifications
     ]);
     // hide notification after 5 seconds
@@ -47,20 +47,16 @@ function AppContent() {
       const games = await listActiveGames(program);
       const newGame = games[games.length - 1];
       if (activeGames.length < games.length) {
-        console.log(`in if ${games[games.length - 1]}`)
+        // console.log(`in if ${games[games.length - 1]}`)
         setSelectedGame(newGame);
       }
 
       if (selectedGame !== newGame) {
-        addNotification(`New game added: ${newGame.toString().slice(0, 4)}...${newGame.toString().slice(-4)}`);
+        addNotification(`New game added: ${newGame.toString().slice(0, 4)}...${newGame.toString().slice(-4)}`, newGame);
       }
-      console.log(selectedGame);
-      console.log(newGame);
 
       // const activeGames = games.sort((a, b) => b.timestamp - a.timestamp); // need to add date etc.
-      setActiveGames(games);
-      // if a new game is created, notify user and update active games
-
+      setActiveGames(games.reverse());
       // if (games.length > 0) {
       //   setSelectedGame(games[games.length - 1]);
       // }
@@ -110,16 +106,6 @@ function AppContent() {
       <main className={styles.mainContent}>
         {wallet ? (
           <>
-            {/* <AnimatePresence>
-              {selectedGame && (
-                <>
-                  <GameDetails
-                    gameAddress={selectedGame}
-                    onClose={() => setSelectedGame(null)}
-                  />
-                </>
-              )}
-            </AnimatePresence> */}
             <AnimatePresence>
               {selectedGame && (
                 <>

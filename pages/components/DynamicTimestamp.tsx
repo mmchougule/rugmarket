@@ -13,8 +13,6 @@ const DynamicTimestamp: React.FC<DynamicTimesatampProps> = ({ date, color = 'ind
     const updateTimeAgo = () => {
       try {
         const parsedDate = parseISO(date);
-        console.log(parsedDate);
-        console.log(date);
         if (isNaN(parsedDate.getTime())) {
           throw new Error('Invalid date');
         }

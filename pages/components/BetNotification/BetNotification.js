@@ -4,6 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import styles from './BetNotification.module.css';
 
 const BetNotifications = ({ notifications }) => {
+
+  // multiple notifications overlapping, handle it properly.
+  // if the notification is the same as the previous one, do not show it
+  if (notifications.length === 0) {
+    return null;
+  }
   return (
     <div className={styles.notificationContainer}>
       <AnimatePresence>
@@ -21,7 +27,9 @@ const BetNotifications = ({ notifications }) => {
               animate={{ x: [0, -5, 5, -5, 5, 0] }}
               transition={{ repeat: Infinity, repeatDelay: 5, duration: 0.3 }}
             >
-              {notification.message}
+              <a href={`https://explorer.solana.com/account/${notification.gameAddress}?cluster=devnet`} target="_blank" rel="noopener noreferrer">
+                {notification.message}
+              </a>
             </motion.div>
           </motion.div>
         ))}

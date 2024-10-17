@@ -11,6 +11,7 @@ import GameDetails from '../GameDetails/GameDetails';
 import TokenCard from '../TokenCards/TokenCards';
 import Confetti from 'react-confetti';
 import BetNotifications from '../BetNotification/BetNotification';
+// import BonusWheel from '../BonusWheel';
 
 const PredictionGame = ({ gameAddress }) => {
     const wallet = useAnchorWallet();
@@ -37,7 +38,6 @@ const PredictionGame = ({ gameAddress }) => {
                     calculateWinners(details);
                 }
             }
-            
             // Check for new bets
             if (isPolling && gameDetails) {
                 const newBets = details.bets.filter(bet => 
@@ -47,11 +47,16 @@ const PredictionGame = ({ gameAddress }) => {
                         oldBet.token.toString() === bet.token.toString()
                     )
                 );
-                console.log(newBets);
-                newBets.forEach(bet => {
+                if (newBets.length > 0) {
+                    console.log(newBets);
+                    newBets.forEach(bet => {
                     const token = tokenDetails.find(t => t.mint === bet.token.toString());
-                    addNotification(`Placed bet: ${(bet.amount.toNumber() / 1e9).toFixed(2)} SOL on ${token ? token.name : 'Token'}`);
-                });
+                    addNotification(
+                        `Placed bet: ${(bet.amount.toNumber() / 1e9).toFixed(2)} SOL on ${token ? token.name : 'Token'}`,
+                        gameAddress
+                    );
+                    });
+                }
             }
         };
         
@@ -62,9 +67,9 @@ const PredictionGame = ({ gameAddress }) => {
         return () => clearInterval(interval);
     }, [gameAddress, wallet]);
 
-    const addNotification = (message) => {
+    const addNotification = (message, gameAddress) => {
         setNotifications(prev => [
-            { id: Date.now(), message },
+            { id: Date.now(), message, gameAddress },
             ...prev.slice(0, 4) // Keep only the last 5 notifications
         ]);
         // hide notification after 5 seconds
@@ -83,6 +88,7 @@ const PredictionGame = ({ gameAddress }) => {
         const totalPot = gameDetails.treasury.toNumber();
         const winningBets = gameDetails.bets.filter(bet => bet.token.toString() === winningToken);
         const totalWinningBets = winningBets.reduce((sum, bet) => sum + bet.amount.toNumber(), 0);
+        console.log(totalWinningBets);
         const calculatedWinners = winningBets.map(bet => {
             const share = bet.amount.toNumber() / totalWinningBets;
             let winnings = Math.floor(totalPot * share);
@@ -143,6 +149,10 @@ const PredictionGame = ({ gameAddress }) => {
                 <h1 className={styles.title}>who will get rekt first?</h1>
                 <span>Total bets: {gameDetails.bets.length}</span>
                 <div className={styles.gameInfo}>
+                    <div className={styles.infoItem}>
+                        <Clock className={styles.icon} />
+                        <span>Round ID: {gameAddress?.toString().slice(0, 4)}...{gameAddress?.toString().slice(-4)}</span>
+                    </div>
                     <div className={styles.infoItem}>
                         <Clock className={styles.icon} />
                         <span>Ends: {new Date(gameDetails.endTime.toNumber() * 1000).toLocaleString()}</span>

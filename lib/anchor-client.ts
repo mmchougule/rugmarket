@@ -44,9 +44,9 @@ export const placeBet = async (program: Program, wallet: AnchorWallet, gameAddre
       throw error;
     }
 };
-
-export const listActiveGames = async (wallet: anchor.Wallet) => {
-    const program = getProgram(wallet);
+// export const listActiveGames = async (wallet: anchor.Wallet) => {
+//   const program = getProgram(wallet);
+export const listActiveGames = async (program: Program) => {
     const gameListPDA = PublicKey.findProgramAddressSync(
       [Buffer.from("game_list")],
       program.programId
@@ -74,10 +74,6 @@ export const listActiveGames = async (wallet: anchor.Wallet) => {
 
     try {
       const games = await program.account.gameList.fetch(gameListPDA);
-    //   const activeGames = await program.methods
-    console.log(games);
-
-    
       return games;
     } catch (error) {
       console.error("Error listing active games:", error);
