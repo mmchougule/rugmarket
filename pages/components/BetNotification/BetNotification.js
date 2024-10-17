@@ -7,7 +7,7 @@ const BetNotifications = ({ notifications }) => {
 
   // multiple notifications overlapping, handle it properly.
   // if the notification is the same as the previous one, do not show it
-  if (notifications.length === 0) {
+  if (!notifications) {
     return null;
   }
   return (
