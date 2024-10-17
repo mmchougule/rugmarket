@@ -53,7 +53,7 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner }) => {
       </div>
       <div className={styles.socialLinks}>
         <a href={`https://pump.fun/${token.mint}`} target="_blank" rel="noopener noreferrer">
-          <p className={styles.pumpFunLink}>View on Pump.fun</p>
+          <p className={styles.pumpFunLink}>view on Pump.fun</p>
         </a>
       </div>
       <div className={styles.socialLinks}>
@@ -65,10 +65,10 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner }) => {
         {token.twitter && <a href={token.twitter} target="_blank" rel="noopener noreferrer"><Twitter size={16} /></a>}
         {token.website && <a href={token.website} target="_blank" rel="noopener noreferrer"><Globe size={16} /></a>}
       </div>
-      <p className={styles.totalReplies}>Total Replies: {currentData.reply_count}</p>
+      <span className={styles.tokenPrice}>created: <DynamicTimestamp date={new Date(token.created_timestamp).toISOString()} /></span>
+      <p className={styles.totalReplies}>total replies: {currentData.reply_count}</p>
       <p className={styles.lastReplyTime}>
-        Last Reply: 
-        {currentData.last_reply ? <DynamicTimestamp date={new Date(currentData.last_reply).toISOString()} /> : 'No replies yet'}
+        last reply: {currentData.last_reply ? <DynamicTimestamp date={new Date(currentData.last_reply).toISOString()} /> : 'No replies yet'}
       </p>
     </motion.div>
   );
