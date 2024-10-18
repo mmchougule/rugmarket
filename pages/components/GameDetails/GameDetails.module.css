@@ -95,14 +95,13 @@
 }
 
 .betInput {
-  width: 94%;
-  /* width 100% is overflowing, fix */
+  width: 100%;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid #00ff9d;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #fff;
   border-radius: 5px;
-  color: #ffffff;
 }
 
 .betConfirmation {
@@ -180,4 +179,29 @@
 
 .betSuccess a:hover {
   color: #00cc7d;
+}
+
+.warningMessage {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.warningMessage .icon {
+  margin-right: 10px;
+}
+
+.priceInfo, .maxBetInfo {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  color: #aaa;
+}
+
+.placeBetButton:disabled {
+  background-color: #444;
+  cursor: not-allowed;
 }
