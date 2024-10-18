@@ -109,7 +109,8 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
         {isBettingClosed && !isGameOver && (
           <div className={styles.warningMessage}>
             <AlertTriangle className={styles.icon} />
-            <span>Betting is closed for this game. New game starts in {timeLeft} seconds </span>
+            <span>Betting is closed for this game.</span>
+            {/*  New game starts in {timeLeft} seconds  */}
           </div>
         )}
         {isGameOver && (
