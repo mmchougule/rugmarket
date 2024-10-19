@@ -79,6 +79,10 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
     }
   };
 
+  if (!gameDetails) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <motion.div 
       className={styles.gameDetails}
