@@ -97,7 +97,7 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
           <GameTimer endTime={gameDetails?.endTime?.toNumber() * 1000} />
           <div className={styles.infoItem}>
             <Clock className={styles.icon} />
-            <span>Admin: {gameDetails.admin.toString().slice(0, 4)}...{gameDetails.admin.toString().slice(-4)}</span>
+            <span>Admin: {gameDetails?.admin?.toString().slice(0, 4)}...{gameDetails?.admin?.toString().slice(-4)}</span>
           </div>
           <div className={styles.infoItem}>
             <DollarSign className={styles.icon} />
