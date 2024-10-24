@@ -6,11 +6,12 @@ const capKey = process.env.CAPSULE_API_KEY || '39b56c1ec3b25918324fb27b2b32b203'
 const capsule = new Capsule(Environment.BETA, capKey);
 
 const TwitterConnect = ({ onConnect = () => {} }) => {
-  // console.log(onConnect)
   const oAuthMethod = OAuthMethod.TWITTER;
   const handleConnect = async () => {
     const oAuthUrl = await capsule.getOAuthURL(oAuthMethod);
-    window.open(oAuthUrl, 'popup', 'width=500,height=600');
+    if (typeof window !== 'undefined') {
+      window.open(oAuthUrl, 'popup', 'width=500,height=600');
+    }
     const { email, userExists } = await capsule.waitForOAuth();
     console.log(email, userExists);
     console.log(capsule.xUrl);
