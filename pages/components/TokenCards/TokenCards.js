@@ -35,9 +35,12 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner, newEvent }) => {
     fetchData();
   }, [token]);
 
-  if (!currentData || !candleStickData) return <div>Loading...</div>;
+  if (!currentData) return <div>Loading...</div>;
 
-  const priceChange = ((candleStickData.close - candleStickData.open) / candleStickData.open * 100).toFixed(2);
+  let priceChange = 0;
+  if (candleStickData) {
+    priceChange = ((candleStickData.close - candleStickData.open) / candleStickData.open * 100).toFixed(2);
+  }
 
   return (
     <motion.div

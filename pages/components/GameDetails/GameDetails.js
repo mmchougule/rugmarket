@@ -174,7 +174,6 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
             transition={{ delay: 0.5 }}
           >
             <h3>Game Over!</h3>
-            <p>{new Date().toLocaleString()} , {new Date(gameDetails.end_time).toLocaleString()}</p>
             <p>Winnings will be distributed shortly. Please wait...</p>
           </motion.div>
         )}

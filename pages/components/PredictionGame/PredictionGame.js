@@ -69,7 +69,7 @@ const PredictionGame = ({ gameAddress }) => {
     }, [gameAddress, wallet]);
 
     useEffect(() => {
-        if (gameDetails && gameDetails.tokens) {
+        if (gameDetails) {
             fetchTokenDetails();
         }
     }, [gameDetails]);
