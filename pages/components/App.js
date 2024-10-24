@@ -11,6 +11,7 @@ import GameResults from './GameResults/GameResults';
 import { Bell } from 'lucide-react';
 import LastGameResults from './LastGameResults/LastGameResults';
 import TwitterConnect from './TwitterConnect/TwitterConnect';
+import Confetti from 'react-confetti';
 
 function AppContent() {
   const wallet = useAnchorWallet();
@@ -25,6 +26,7 @@ function AppContent() {
   const [isTwitterConnected, setIsTwitterConnected] = useState(false);
   const [userCredits, setUserCredits] = useState(0);
   const [hasFreeBet, setHasFreeBet] = useState(false);
+  const [showWinnerAnimation, setShowWinnerAnimation] = useState(false);
 
   useEffect(() => {
     fetchActiveGames();
@@ -34,16 +36,21 @@ function AppContent() {
       .on('postgres_changes', 
         { event: 'INSERT', schema: 'public', table: 'game_rounds' },
         payload => {
-
+          setShowWinnerAnimation(true);
+          setTimeout(() => {
+              setShowWinnerAnimation(false);
+          }, 5000);
+  
           setActiveGames(prevGames => {
             const newGames = [payload.new, ...prevGames];
-            setPreviousGame(prevGames[0]);
+            // setPreviousGame(prevGames[0]);
             return newGames.slice(0, 10);
           });
           addNotification(`New game added: ${payload.new.address.slice(0, 4)}...${payload.new.address.slice(-4)}`, payload.new.address);
           setNewGameAvailable(true);
           setShowResults(true);
           setSelectedGame(payload.new?.address)
+
         }
       )
       .subscribe();
@@ -117,6 +124,7 @@ function AppContent() {
         .select('*')
         .eq('user_address', wallet?.publicKey?.toString())
         .single();
+
     if (error) console.error('Error fetching user details:', error);
     else {
       console.log('fetchUserDetails', data)
@@ -236,10 +244,13 @@ function AppContent() {
 
       <AnimatePresence>
         {previousGame && showResults && (
+          <>
+          {showWinnerAnimation && <Confetti />}
           <GameResults 
             previousGame={previousGame} 
             onClose={() => setShowResults(false)} 
           />
+          </>
         )}
       </AnimatePresence>
     </div>

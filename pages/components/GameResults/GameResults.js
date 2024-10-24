@@ -4,6 +4,7 @@ import styles from './GameResults.module.css';
 import { Trophy, DollarSign, Users, Clock } from 'lucide-react';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import Confetti from 'react-confetti';
 import { fetchGameRoundDetails, getProgram } from '../../../lib/anchor-client';
 import { useEffect, useState } from 'react';
 
@@ -22,12 +23,14 @@ const GameResults = ({ previousGame, onClose }) => {
       const gameDetails = await fetchGameRoundDetails(getProgram(wallet), new PublicKey(previousGame.address));
       if (!gameDetails) return;
       setPreviousGameDetails(gameDetails);
-      console.log(previousGame)
-      const winningBets = gameDetails.bets.filter(bet => bet.token.toString() === previousGame.winning_token?.toString());
+      console.log(previousGameDetails)
+      const winningBets = previousGameDetails?.bets?.filter(bet => bet.token.toString() === previousGame.winning_token?.toString());
       setWinningBets(winningBets);
-      const totalPot = parseInt(gameDetails.treasury) / 1e9; // Convert from lamports to SOL
-      const totalPlayers = gameDetails.bets.length;
-      setWinningToken(gameDetails.winningToken?.toString());
+    //   console.log(winningBets)
+      const totalPot = parseInt(previousGameDetails?.treasury) / 1e9; // Convert from lamports to SOL
+      const totalPlayers = previousGameDetails?.bets?.length;
+    //   console.log(previousGameDetails);console.log(previousGameDetails?.winningToken)
+      setWinningToken(previousGame.winning_token);
       setTotalPot(totalPot);
       setTotalPlayers(totalPlayers);
       if (winningBets.length > 0) {
@@ -58,6 +61,7 @@ const GameResults = ({ previousGame, onClose }) => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
+        <Confetti />
         <h2 className={styles.title}>🎉 Game Results 🎉</h2>
         <div className={styles.winnerSection}>
           <Trophy size={24} className={styles.icon} />
@@ -78,15 +82,17 @@ const GameResults = ({ previousGame, onClose }) => {
             {/* <p>Game ID: {previousGame.id}</p> */}
           </div>
         </div>
-        <div className={styles.winnersList}>
-          <h3>Winners</h3>
-          {winningBets.map((bet, index) => (
-            <div key={index} className={styles.winnerItem}>
-              <p>{bet.user?.toString().slice(0, 4)}...{bet.user?.toString().slice(-4)}</p>
-              <p>{calculateWinnings(bet)} SOL</p>
+        {winningBets && (
+            <div className={styles.winnersList}>
+            <h3>Winners</h3>
+            {winningBets?.map((bet, index) => (
+                <div key={index} className={styles.winnerItem}>
+                <p>{bet?.user?.toString().slice(0, 4)}...{bet?.user?.toString().slice(-4)}</p>
+                <p>{calculateWinnings(bet)} SOL</p>
+                </div>
+            ))}
             </div>
-          ))}
-        </div>
+        )}
         <button className={styles.closeButton} onClick={onClose}>Close</button>
       </motion.div>
     </motion.div>
