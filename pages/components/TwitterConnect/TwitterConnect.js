@@ -14,8 +14,11 @@ const TwitterConnect = ({ onConnect = () => {} }) => {
   const oAuthMethod = OAuthMethod.TWITTER;
   const handleConnect = async () => {
     const oAuthUrl = await capsule.getOAuthURL(oAuthMethod);
-    if (window && typeof window !== 'undefined') {
-      window.open(oAuthUrl, 'popup', 'width=500,height=600');
+    if (typeof document !== 'undefined') {
+      const popup = document.open(oAuthUrl, 'popup', 'width=500,height=600');
+      if (popup) {
+        popup.focus();
+      }
     }
     const { email, userExists } = await capsule.waitForOAuth();
     console.log(email, userExists);
