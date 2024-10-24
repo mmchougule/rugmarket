@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
-import { Wheel } from 'react-custom-roulette'
+// import { Wheel } from 'react-custom-roulette'
 import styles from './WheelOfFortune.module.css'
+import dynamic from 'next/dynamic';
+
+const Wheel = dynamic(() => import('react-custom-roulette').then(mod => mod.Wheel), {
+  ssr: false,
+});
 
 const data = [
   { option: 'Lose bet', style: { backgroundColor: '#FF6B6B', textColor: '#ffffff' } },

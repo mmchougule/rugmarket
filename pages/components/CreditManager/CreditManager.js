@@ -79,7 +79,7 @@ const CreditManager = ({ userCredits, onCreditChange }) => {
       transition={{ duration: 0.5 }}
     >
       <h3>Manage Credits</h3>
-      <p>Current Balance: {userCredits.toFixed(3)} SOL</p>
+      <p>Current Balance: {userCredits?.toFixed(3)} SOL</p>
       <input
         type="number"
         value={amount}
