@@ -4,12 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import styles from './GameList.module.css';
 import { listActiveGames } from '../../../lib/anchor-client';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
+import GameHistory from '../GameHistory/GameHistory';
 
 const GameList = ({ games, onSelectGame }) => {
 //   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(null);
   const [lastFinishedGame, setLastFinishedGame] = useState(null);
   const wallet = useAnchorWallet();
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -31,12 +33,23 @@ const GameList = ({ games, onSelectGame }) => {
   }, [onSelectGame]);
 
   return (
-    <div className={styles.gameListContainer}>
-      <CurrentGame game={currentGame} onSelectGame={onSelectGame} />
-      <LastFinishedGame game={lastFinishedGame} onSelectGame={onSelectGame} />
-      <HistoricalGames games={games}
-        onSelectGame={onSelectGame} />
-    </div>
+    <>
+    <motion.button onClick={() => setShowHistory(!showHistory)}>
+    {showHistory ? 'Hide History' : 'Show History'}
+      </motion.button>
+      <div className={styles.gameListContainer}>
+        {showHistory ? (
+          <GameHistory />
+      ) : (
+        <div>
+          <CurrentGame game={currentGame} onSelectGame={onSelectGame} />
+          {/* <LastFinishedGame game={lastFinishedGame} onSelectGame={onSelectGame} />
+          <HistoricalGames games={games}
+            onSelectGame={onSelectGame} /> */}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -137,4 +150,3 @@ const WinnerAnnouncement = ({ game }) => {
 };
 
 export default GameList;
-

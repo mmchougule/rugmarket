@@ -1,0 +1,33 @@
+.historyContainer {
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.gameList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.gameItem {
+  background-color: #16213e;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gameItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 255, 157, 0.2);
+}
+
+.gameDetails {
+  background-color: #0f3460;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+

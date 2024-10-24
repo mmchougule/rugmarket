@@ -2,20 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { PublicKey } from '@solana/web3.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './PredictionGame.module.css';
-import { fetchGameDetails, getProgram } from '../../../lib/anchor-client';
 import { DollarSign, Clock } from 'lucide-react';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { getTokenDetails } from '../../../lib/tokenUtils';
-import Leaderboard from '../Leaderboard/Leaderboard';
+import Leaderboard from '../RoundLeaderboard/RoundLeaderboard';
 import GameDetails from '../GameDetails/GameDetails';
 import TokenCard from '../TokenCards/TokenCards';
 import Confetti from 'react-confetti';
 import BetNotifications from '../BetNotification/BetNotification';
-// import BonusWheel from '../BonusWheel';
+import WheelOfFortune from '../WheelOfFortune/WheelOfFortune';
+import TwitterConnect from '../TwitterConnect/TwitterConnect';
+import { Copy } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
+import GameAnalytics from '../GameAnalytics/GameAnalytics';
+import CreditManager from '../CreditManager/CreditManager';
+import { initializeUserWithTwitter, fetchGameRoundDetails, getProgram } from '../../../lib/anchor-client';
 
 const PredictionGame = ({ gameAddress }) => {
     const wallet = useAnchorWallet();
     const [gameDetails, setGameDetails] = useState(null);
+    const [bets, setBets] = useState([]);
     const [tokenDetails, setTokenDetails] = useState([]);
     const [showWinnerAnimation, setShowWinnerAnimation] = useState(false);
     const [winners, setWinners] = useState([]);
@@ -23,56 +29,179 @@ const PredictionGame = ({ gameAddress }) => {
     const [betAmount, setBetAmount] = useState('');
     const [notifications, setNotifications] = useState([]);
 
-    useEffect(() => {
-        const fetchDetails = async (isPolling) => {
-            const program = getProgram(wallet);
-            const details = await fetchGameDetails(program, new PublicKey(gameAddress));
-            setGameDetails(details);
+    const [userCredits, setUserCredits] = useState(0);
+    const [hasFreeBet, setHasFreeBet] = useState(false);
+    const [isTwitterConnected, setIsTwitterConnected] = useState(false);
 
-            // token info doesn't change except for the market cap, we can update it later
-            if (!isPolling) {
-                const tokenIds = details.tokens.map(token => token.id.toString());
-                const topTokens = await getTokenDetails(tokenIds);
-                setTokenDetails(topTokens);
-                if (details.status.ended && gameDetails?.winningToken !== null) {
-                    calculateWinners(details);
+    useEffect(() => {
+        fetchGameDetails();
+        fetchUserDetails();
+
+        const gameSubscription = supabase
+            .channel('game_rounds_changes')
+            .on('postgres_changes', 
+                { event: '*', schema: 'public', table: 'game_rounds', filter: `address=eq.${gameAddress}` },
+                (payload) => {
+                    console.log('Game round changed in PredictionGame:', payload);
+                    setGameDetails(prevDetails => ({...prevDetails, ...payload.new}));
+                    if (payload.new.status === 'ended') {
+                        calculateWinners(payload.new);
+                    }
                 }
-            }
-            // Check for new bets
-            if (isPolling && gameDetails) {
-                const newBets = details.bets.filter(bet => 
-                    !gameDetails.bets.some(oldBet => 
-                        oldBet.user.toString() === bet.user.toString() && 
-                        oldBet.amount.eq(bet.amount) && 
-                        oldBet.token.toString() === bet.token.toString()
-                    )
-                );
-                if (newBets.length > 0) {
-                    console.log(newBets);
-                    newBets.forEach(bet => {
-                    const token = tokenDetails.find(t => t.mint === bet.token.toString());
-                    addNotification(
-                        `Placed bet: ${(bet.amount.toNumber() / 1e9).toFixed(2)} SOL on ${token ? token.name : 'Token'}`,
-                        gameAddress
-                    );
-                    });
+            )
+            .subscribe();
+
+        const betsSubscription = supabase
+            .channel('bets_changes')
+            .on('postgres_changes', 
+                { event: '*', schema: 'public', table: 'bets', filter: `game_address=eq.${gameAddress}` },
+                (payload) => {
+                    console.log('New bet:', payload);
+                    setBets(currentBets => [...currentBets, payload.new]);
+                    addNotification(`New bet: ${payload.new.amount} SOL on ${payload.new.token_id}`, gameAddress);
                 }
-            }
+            )
+            .subscribe();
+
+        return () => {
+            gameSubscription.unsubscribe();
+            betsSubscription.unsubscribe();
         };
-        
-        fetchDetails(false);
-        const interval = setInterval(() => {
-            fetchDetails(true);
-        }, 5000);
-        return () => clearInterval(interval);
     }, [gameAddress, wallet]);
+
+    useEffect(() => {
+        if (gameDetails && gameDetails.tokens) {
+            fetchTokenDetails();
+        }
+    }, [gameDetails]);
+
+    const fetchGameDetails = async () => {
+        // first get game details from solana program
+        const gameDetails = await fetchGameRoundDetails(getProgram(wallet), new PublicKey(gameAddress));
+        // setGameDetails(gameDetails);
+
+        // get game details from supabase
+        const { data, error } = await supabase
+            .from('game_rounds')
+            .select('*')
+            .eq('address', gameAddress)
+            .single();
+        
+        const { data: allBets, betsRrror } = await supabase
+            .from('bets')
+            .select('*')
+            .eq('game_address', gameAddress);
+
+        if (allBets) {
+            setBets(allBets)
+        }
+        if (error) console.error('Error fetching game details:', error);
+        else {
+            data.tokens = gameDetails.tokens;
+            setGameDetails(data);
+        }
+
+        // get token details from solana
+        // const program = getProgram(wallet);
+        // const tokenDetails = await getTokenDetails(gameDetails.tokens);
+        // setTokenDetails(tokenDetails);
+    };
+
+    const fetchUserDetails = async () => {
+        if (!wallet) return;
+        const { data, error } = await supabase
+            .from('user_credits')
+            .select('*')
+            .eq('user_address', wallet.publicKey.toString())
+            .single();
+        if (error) console.error('Error fetching user details:', error);
+        else {
+            setUserCredits(data.credits);
+            setHasFreeBet(data.has_free_bet);
+            setIsTwitterConnected(data.is_twitter_connected);
+        }
+    };
+
+    const fetchTokenDetails = async () => {
+        const tokenIds = gameDetails.tokens.map(token => token.id.toString());
+        const details = await getTokenDetails(tokenIds);
+        setTokenDetails(details);
+    };
+
+    const handleSpinResult = async (spinResult) => {
+        const newCredits = userCredits + spinResult;
+        setUserCredits(newCredits);
+        const { error } = await supabase.from('user_credits')
+            .update({ credits: newCredits })
+            .eq('user_address', wallet.publicKey.toString());
+
+        if (error) {
+            console.error('Error updating user credits:', error);
+        }
+    };
+
+    const handleCreditChange = (newCredits) => {
+        setUserCredits(newCredits);
+    };
+
+    const handleTwitterConnect = async (email) => {
+        const { data: userCredits, error } = await supabase.from('user_credits')
+            .select('*')
+            .eq('user_address', wallet.publicKey.toString())
+            .single();
+        let userObj = userCredits;
+        console.log(userObj)
+        // if user doesn't exist, insert it. id as wallet address
+        if (userObj === null && email) {
+            const { data, error } = await supabase.from('user_credits')
+                .insert({
+                    user_address: wallet.publicKey.toString(), 
+                    credits: 0.005, 
+                    // is_first_bet: true, 
+                    has_free_bet: true,
+                    is_twitter_connected: true,
+                    email: email
+                }).select().single();
+            console.log(data)
+            if (error) console.error('Error signing up:', error);
+            else userObj = data;
+        }
+
+        console.log(userObj)
+        // user credits were inserted but no credit added yet
+        if (userObj && !userObj.is_twitter_connected) {
+            // update user credits
+          const { data, error } = await supabase
+            .from('user_credits')
+            .update({ is_twitter_connected: true, credits: userCredits + 0.005, email: email })
+            .eq('user_address', wallet.publicKey.toString())
+            .select().single();
+          if (error) console.error('Error connecting Twitter:', error);
+          else {
+            userObj = data;
+            // setIsTwitterConnected(true);
+            // setUserCredits(prevCredits => prevCredits + 0.005);
+          }
+        }
+
+        // when we have twitter connected, we need to update the user account on solana
+        // do this only once
+        if (userObj && userObj.is_twitter_connected) {
+            const program = getProgram(wallet);
+            // we have email instead of twitter handle
+            const userAccount = await initializeUserWithTwitter(program, wallet, userObj.email);
+            console.log(userAccount);
+            setUserCredits(userObj?.credits || 0);
+            setIsTwitterConnected(true);
+        }
+
+    };
 
     const addNotification = (message, gameAddress) => {
         setNotifications(prev => [
             { id: Date.now(), message, gameAddress },
-            ...prev.slice(0, 4) // Keep only the last 5 notifications
+            ...prev.slice(0, 4)
         ]);
-        // hide notification after 5 seconds
         setTimeout(() => {
             setNotifications(prev => prev.slice(1));
         }, 5000);
@@ -82,42 +211,36 @@ const PredictionGame = ({ gameAddress }) => {
         setSelectedToken(mintAddress === selectedToken ? null : mintAddress);
     };
 
-    const calculateWinners = (gameDetails) => {
-        const winningToken = gameDetails.winningToken?.toString();
-        //  || gameDetails.tokens[0].id.toString();
-        const totalPot = gameDetails.treasury.toNumber();
-        const winningBets = gameDetails.bets.filter(bet => bet.token.toString() === winningToken);
-        const totalWinningBets = winningBets.reduce((sum, bet) => sum + bet.amount.toNumber(), 0);
-        console.log(totalWinningBets);
+    const calculateWinners = async (gameDetails) => {
+        const winningToken = gameDetails.winning_token;
+        const winningBets = bets.filter(bet => bet.token_id === winningToken);
+        const totalWinningBets = winningBets.reduce((sum, bet) => sum + parseFloat(bet.amount), 0);
+
         const calculatedWinners = winningBets.map(bet => {
-            const share = bet.amount.toNumber() / totalWinningBets;
-            let winnings = Math.floor(totalPot * share);
-            const profit = winnings - bet.amount.toNumber();
-            // we take 10% fee for the house
+            const share = parseFloat(bet.amount) / totalWinningBets;
+            let winnings = Math.floor(gameDetails.treasury * share);
+            const profit = winnings - parseFloat(bet.amount);
             const houseFee = Math.floor(winnings * 0.1);
             winnings = winnings - houseFee;
             return {
-                user: bet.user.toString(),
-                amount: bet.amount.toNumber(),
+                user: bet.user_address,
+                amount: parseFloat(bet.amount),
                 winnings,
                 profit,
-                roi: ((winnings / bet.amount.toNumber()) - 1) * 100
+                roi: ((winnings / parseFloat(bet.amount)) - 1) * 100
             };
         });
 
-        // just show vibrating animation on each bet
         setWinners(calculatedWinners);
-        // setShowWinnerAnimation(true);
-        // setTimeout(() => {
-        //     setShowWinnerAnimation(false);
-        // }, 5000);
+        setShowWinnerAnimation(true);
+        setTimeout(() => {
+            setShowWinnerAnimation(false);
+        }, 5000);
     };
-    const handleBetAmountChange = (e) => {
-        setBetAmount(e.target.value);
-    };
-    if (!gameDetails || !tokenDetails) return <div className={styles.loading}>Loading...</div>;
 
-    const winningToken = tokenDetails.find(token => token.mint === gameDetails?.winningToken?.toString());
+    if (!gameDetails || !tokenDetails.length) return <div className={styles.loading}>Loading...</div>;
+
+    const winningToken = tokenDetails.find(token => token.mint === gameDetails?.winning_token);
 
     return (
         <div className={styles.gameContainer}>
@@ -144,22 +267,27 @@ const PredictionGame = ({ gameAddress }) => {
                     </motion.div>
                 )}
             </AnimatePresence>
+            {/* <WheelOfFortune 
+                tokens={tokenDetails} 
+                onSpinComplete={handleSpinComplete} 
+            /> */}
 
             <div className={styles.header}>
                 <h1 className={styles.title}>who will get rekt first?</h1>
-                <span>Total bets: {gameDetails.bets.length}</span>
+                <span>Total bets: {bets.length}</span>
                 <div className={styles.gameInfo}>
                     <div className={styles.infoItem}>
                         <Clock className={styles.icon} />
-                        <span>Round ID: {gameAddress?.toString().slice(0, 4)}...{gameAddress?.toString().slice(-4)}</span>
+                        <span>Round ID: {gameAddress?.slice(0, 4)}...{gameAddress?.slice(-4)}</span>
+                        <Copy className={styles.icon} onClick={() => navigator.clipboard.writeText(gameAddress)} />
                     </div>
                     <div className={styles.infoItem}>
                         <Clock className={styles.icon} />
-                        <span>Ends: {new Date(gameDetails.endTime.toNumber() * 1000).toLocaleString()}</span>
+                        <span>Ends: {new Date(gameDetails.end_time).toLocaleString()}</span>
                     </div>
                     <div className={styles.infoItem}>
                         <DollarSign className={styles.icon} />
-                        <span>Total Pot: {gameDetails.treasury.toNumber() / 1e9} SOL</span>
+                        <span>Total Pot: {gameDetails.treasury || 0} SOL</span>
                     </div>
                 </div>
             </div>
@@ -183,6 +311,7 @@ const PredictionGame = ({ gameAddress }) => {
                             selectedToken={selectedToken}
                             gameDetails={gameDetails}
                             setGameDetails={setGameDetails}
+                            bets={bets}
                         />
                     </div>
                 )}
@@ -267,6 +396,21 @@ const PredictionGame = ({ gameAddress }) => {
                 </div>
                 )}
             </div>
+            <div className={styles.userCredits}>Your Credits: {userCredits} SOL</div>
+            {/* {!isTwitterConnected ? <TwitterConnect onConnect={handleTwitterConnect} />
+                : <WheelOfFortune userCredits={userCredits} onSpin={handleSpinResult} />} */}
+
+            {!isTwitterConnected ? (
+                <TwitterConnect onConnect={handleTwitterConnect} />
+            ) : (
+                <>
+                <WheelOfFortune userCredits={userCredits} onSpin={handleSpinResult} />
+                {/* <CreditManager userCredits={userCredits} onCreditChange={handleCreditChange} /> */}
+                </>
+            )}
+
+            {/* <GameAnalytics /> */}
+
             <BetNotifications notifications={notifications} />
         </div>
     );

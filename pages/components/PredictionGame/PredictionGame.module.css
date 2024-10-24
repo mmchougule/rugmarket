@@ -1,230 +1,256 @@
+.userCredits {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #00FFFF;
+}
 .gameContainer {
     background-color: #151521;
     color: #ffffff;
     padding: 20px;
     font-family: 'Inter', sans-serif;
     position: relative;
-  }
-  
-  .winnerOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .winnerCard {
-    background-color: #1e1e2e;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-  }
-  
-  .winnerTokenImage {
-    width: 100px;
-    height: 100px;
-    margin: 20px 0;
-  }
-  
-  .fireworksIcon {
-    font-size: 48px;
-    color: #00FFFF;
-    margin-bottom: 20px;
-  }
-  
-  .header {
-    margin-bottom: 20px;
-  }
-  
-  .title {
-    font-size: 28px;
-    color: #00FFFF;
-    margin-bottom: 10px;
-  }
-  
-  .gameInfo {
-    display: flex;
-    justify-content: space-between;
-    background-color: #1e1e2e;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    gap: 20px;
-  }
-  
-  .infoItem {
-    display: flex;
-    align-items: center;
-  }
-  
-  .icon {
-    margin-right: 5px;
-    color: #00FFFF;
-  }
-  
+}
+
+.winnerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.winnerCard {
+  background-color: #1e1e2e;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.winnerTokenImage {
+  width: 100px;
+  height: 100px;
+  margin: 20px 0;
+}
+
+.fireworksIcon {
+  font-size: 48px;
+  color: #00FFFF;
+  margin-bottom: 20px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 28px;
+  color: #00FFFF;
+  margin-bottom: 10px;
+}
+
+.gameInfo {
+  display: flex;
+  justify-content: space-between;
+  background-color: #1e1e2e;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-right: 5px;
+  color: #00FFFF;
+}
+
+.content {
+  display: flex;
+  gap: 20px;
+}
+
+.tokenSection {
+  display: flex;
+  /* flex-wrap: wrap; */
+  gap: 15px;
+  flex: 2;
+}
+
+.gameDetails {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.betInputSection {
+  margin-top: 20px;
+}
+
+.warningMessage {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.warningMessage .icon {
+  margin-right: 10px;
+}
+
+.gameOverMessage {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: #00ff00;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.betInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.placeBetButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.placeBetButton:hover {
+  background-color: #45a049;
+}
+
+.winningToken {
+  background-color: #1e1e2e;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.leaderboard {
+  background-color: #1e1e2e;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.leaderboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard th, .leaderboard td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+.leaderboard th {
+  color: #00FFFF;
+}
+
+.positive {
+  color: #00FF00;
+}
+
+.negative {
+  color: #FF0000;
+}
+
+.betPanel {
+  background-color: #1e1e2e;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.betControls {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.betInput {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2a2a3a;
+  color: #ffffff;
+}
+
+.betButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #00FFFF;
+  color: #151521;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.betButton:hover {
+  background-color: #00CCCC;
+}
+
+.betButton:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: #00FFFF;
+}
+
+@media (max-width: 768px) {
   .content {
-    display: flex;
-    gap: 20px;
+    flex-direction: column;
   }
-  
-  .tokenSection {
-    display: flex;
-    /* flex-wrap: wrap; */
-    gap: 15px;
-    flex: 2;
-  }
-  
-  .gameDetails {
-    flex: 1;
-    min-width: 300px;
-    max-width: 500px;
-  }
-  
-  .betInputSection {
-    margin-top: 20px;
-  }
-  
-  .warningMessage {
-    background-color: rgba(255, 0, 0, 0.1);
-    color: #ff4d4d;
-    padding: 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .warningMessage .icon {
-    margin-right: 10px;
-  }
-  
-  .gameOverMessage {
-    background-color: rgba(0, 255, 0, 0.1);
-    color: #00ff00;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .betInput {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #444;
-    background-color: #222;
-    color: #fff;
-    border-radius: 5px;
-  }
-  
-  .placeBetButton {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  .placeBetButton:hover {
-    background-color: #45a049;
-  }
-  
-  .winningToken {
-    background-color: #1e1e2e;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  
-  .leaderboard {
-    background-color: #1e1e2e;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  
-  .leaderboard table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .leaderboard th, .leaderboard td {
-    text-align: left;
-    padding: 10px;
-    border-bottom: 1px solid #2a2a3a;
-  }
-  
-  .leaderboard th {
-    color: #00FFFF;
-  }
-  
-  .positive {
-    color: #00FF00;
-  }
-  
-  .negative {
-    color: #FF0000;
-  }
-  
-  .betPanel {
-    background-color: #1e1e2e;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  .betControls {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  
-  .betInput {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #2a2a3a;
-    color: #ffffff;
-  }
-  
-  .betButton {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #00FFFF;
-    color: #151521;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .betButton:hover {
-    background-color: #00CCCC;
-  }
-  
-  .betButton:disabled {
-    background-color: #555;
-    cursor: not-allowed;
-  }
-  
-  .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-size: 24px;
-    color: #00FFFF;
-  }
-  
-  @media (max-width: 768px) {
-    .content {
-      flex-direction: column;
-    }
-  }
+}
+
+.predictionGame {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  color: #e0e0e0;
+}
+
+.userInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.firstBetNotice {
+  color: #00ff9d;
+  font-weight: bold;
+}

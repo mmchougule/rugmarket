@@ -1,0 +1,59 @@
+.lastGameResults {
+  background-color: #1e1e2e;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 18px;
+  color: #00FFFF;
+  margin-bottom: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.winnerSection, .statsSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  color: #00FFFF;
+}
+
+.winnersList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.winnerItem {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .lastGameResults {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .winnerItem {
+    font-size: 12px;
+  }
+}
+

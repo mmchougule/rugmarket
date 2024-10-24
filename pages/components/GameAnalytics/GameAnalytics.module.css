@@ -1,0 +1,21 @@
+.gameAnalytics {
+  background-color: #16213e;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stats div {
+  background-color: #0f3460;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+

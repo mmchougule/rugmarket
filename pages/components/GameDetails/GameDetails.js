@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PublicKey } from '@solana/web3.js';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { fetchGameDetails, placeBet, getProgram } from '../../../lib/anchor-client';
+import { placeBet, getProgram } from '../../../lib/anchor-client';
 import { getTokenDetails } from '../../../lib/tokenUtils';
 import GameTimer from '../GameTimer/GameTimer';
 import styles from './GameDetails.module.css';
 import { Clock, DollarSign, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
-import Leaderboard from '../Leaderboard/Leaderboard';
+import Leaderboard from '../RoundLeaderboard/RoundLeaderboard';
+import { supabase } from '../../../lib/supabase';
 
 const lamportsToSol = (lamports) => lamports / 10 ** 9;
 
-const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }) => {
+const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, userCredits, bets }) => {
   const wallet = useAnchorWallet();
   const [tokenDetails, setTokenDetails] = useState([]);
   const [betAmount, setBetAmount] = useState('');
@@ -19,31 +20,66 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
   const [placeBetMessage, setPlaceBetMessage] = useState('');
   const [isBettingClosed, setIsBettingClosed] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [hasFreeBet, setHasFreeBet] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
-      if (wallet && gameDetails) {
+
+      if (gameDetails) {
         const tokenIds = gameDetails.tokens.map(token => token.id.toString());
         const topTokens = await getTokenDetails(tokenIds);
         // if (topTokens.length === 0) {
         setTokenDetails(topTokens);
 
+        const endTime = new Date(gameDetails.end_time).getTime();
+        setIsGameOver(Date.now() > endTime);
+  
+        // "2024-10-23T21:54:29.892+00:00" this is the format of the start time
         // Check if betting is closed (5 minutes after game start)
         const currentTime = Date.now() / 1000;
-        const bettingCloseTime = gameDetails.startTime.toNumber() + 300; // 5 minutes after start
+        const bettingCloseTime = new Date(gameDetails.start_time).getTime() / 1000 + 600; // 5 minutes after start
         setIsBettingClosed(currentTime > bettingCloseTime);
 
         // Check if game is over
-        setIsGameOver(currentTime > gameDetails.endTime.toNumber());
+        // setIsGameOver(currentTime > new Date(gameDetails.end_time).getTime() / 1000);
       }
     };
 
     fetchDetails();
     const interval = setInterval(fetchDetails, 10000); // Refresh every 10 seconds
     return () => clearInterval(interval);
-  }, [wallet, gameDetails]);
+  }, [gameDetails]);
+  // wallet, 
+
+  useEffect(() => {
+    checkFreeBetEligibility();
+  }, []);
+
+  const checkFreeBetEligibility = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('has_free_bet')
+        .eq('user_address', wallet.publicKey.toString())
+        .single();
+
+      if (error) console.error('Error checking free bet eligibility:', error);
+      else setHasFreeBet(data.has_free_bet);
+    }
+  };
 
   const handlePlaceBet = async () => {
+    // if (betAmount > userCredits) {
+    //   alert('Not enough credits to place this bet. Please add more credits or reduce your bet amount.');
+    //   return;
+    // }
+
+    // if using credits. allow users to place bets from their credits.
+    // they still have to pay for the transaction fee.
+    // const newCredits = userCredits - betAmount;
+    // check if free bet is available.
+
     if (!wallet || !selectedToken || !betAmount) return;
 
     setIsLoading(true);
@@ -58,6 +94,16 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
       const program = getProgram(wallet);
       const tx = await placeBet(program, wallet, new PublicKey(gameAddress), new PublicKey(selectedToken), betAmountLamports);
       setPlaceBetMessage(tx);
+
+      if (hasFreeBet && userCredits > 0) {
+        // Update the user's profile to mark the free bet as used
+        const newCredits = hasFreeBet ? userCredits : userCredits - betAmount;
+        await supabase
+          .from('user_credits')
+          .update({ credits: newCredits, has_free_bet: false, free_bet_used: true })
+          .eq('user_address', wallet.publicKey.toString());
+        setHasFreeBet(false);
+      }
     } catch (error) {
       console.error('Error placing bet:', error);
       setPlaceBetMessage(`Error: ${error.message}`);
@@ -98,15 +144,18 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
         transition={{ delay: 0.2 }}
       >
         <div className={styles.gameInfo}>
-          <GameTimer endTime={gameDetails?.endTime?.toNumber() * 1000} />
-          <div className={styles.infoItem}>
+          <GameTimer endTime={gameDetails.end_time} />
+          {/* <GameTimer endTime={new Date(gameDetails.end_time).getTime() / 1000} /> */}
+          {/* <div className={styles.infoItem}>
             <Clock className={styles.icon} />
             <span>Admin: {gameDetails?.admin?.toString().slice(0, 4)}...{gameDetails?.admin?.toString().slice(-4)}</span>
-          </div>
+          </div> */}
+          {gameDetails.treasury && (
           <div className={styles.infoItem}>
-            <DollarSign className={styles.icon} />
-            <span>Treasury: {lamportsToSol(gameDetails.treasury).toFixed(2)} SOL</span>
-          </div>
+              <DollarSign className={styles.icon} />
+              <span>Treasury: {lamportsToSol(gameDetails.treasury).toFixed(2)} SOL</span>
+            </div>
+          )}
         </div>
 
         <h3>Place Your Bet</h3>
@@ -125,6 +174,7 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
             transition={{ delay: 0.5 }}
           >
             <h3>Game Over!</h3>
+            <p>{new Date().toLocaleString()} , {new Date(gameDetails.end_time).toLocaleString()}</p>
             <p>Winnings will be distributed shortly. Please wait...</p>
           </motion.div>
         )}
@@ -141,7 +191,7 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
               onChange={(e) => setBetAmount(e.target.value)}
               placeholder="Enter bet amount"
               min="0.1"
-              defaultValue="0.5"
+              // defaultValue="0.5"
               className={styles.betInput}
               disabled={isBettingClosed}
             />
@@ -181,14 +231,20 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails }
         transition={{ delay: 0.4 }}
       >
         <h3>High Rollers</h3>
-        <Leaderboard game={gameDetails} tokenDetails={tokenDetails} />
+        {bets.length}
+        <Leaderboard game={gameDetails} tokenDetails={tokenDetails} bets={bets} />
       </motion.div>
+
+      {hasFreeBet && (
+        <div className={styles.freeBetNotice}>
+          You have a free bet available!
+        </div>
+      )}
     </motion.div>
   );
 };
 
 export default GameDetails;
-
 const modalMessage = (message) => {
   return (
     <motion.div 
@@ -202,7 +258,7 @@ const modalMessage = (message) => {
         {message.includes('Error') ? 'Error placing bet:' : 'Bet placed successfully!'}
       </span>
       {!message.includes('Error') && (
-        <a href={`https://solscan.io/tx/${message}?cluster=devnet`} target="_blank" rel="noopener noreferrer">
+        <a href={`https://explorer.solana.com/tx/${message}?cluster=devnet`} target="_blank" rel="noopener noreferrer">
           View Transaction
         </a>
       )}
@@ -210,3 +266,4 @@ const modalMessage = (message) => {
     </motion.div>
   )
 }
+

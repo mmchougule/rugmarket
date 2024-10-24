@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import { Twitter, Globe, TrendingUp, TrendingDown } from 'lucide-react';
 import styles from './TokenCards.module.css';
 import DynamicTimestamp from '../DynamicTimestamp';
 
-const TokenCard = ({ token, isSelected, onSelect, isWinner }) => {
+const TokenCard = ({ token, isSelected, onSelect, isWinner, newEvent }) => {
   const [currentData, setCurrentData] = useState(null);
   const [candleStickData, setCandleStickData] = useState(null);
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (newEvent) {
+      controls.start({
+        x: [0, -5, 5, -5, 5, 0],
+        transition: { duration: 0.5 }
+      });
+    }
+  }, [newEvent, controls]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +43,7 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner }) => {
     <motion.div
       className={`${styles.tokenCard} ${isSelected ? styles.selected : ''}`}
       onClick={() => onSelect(token.mint)}
+      animate={controls}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >

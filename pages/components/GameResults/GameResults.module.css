@@ -1,0 +1,99 @@
+.resultsOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.resultsCard {
+  background-color: #1e1e2e;
+  border-radius: 20px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+  text-align: center;
+  color: #00FFFF;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.winnerSection {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tokenImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 10px 0;
+}
+
+.statsSection {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-right: 5px;
+  color: #00FFFF;
+}
+
+.winnersList {
+  margin-bottom: 20px;
+}
+
+.winnerItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.closeButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #00FFFF;
+  color: #1e1e2e;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.closeButton:hover {
+  background-color: #00CCCC;
+}
+
+@media (max-width: 480px) {
+  .resultsCard {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .tokenImage {
+    width: 60px;
+    height: 60px;
+  }
+}
+

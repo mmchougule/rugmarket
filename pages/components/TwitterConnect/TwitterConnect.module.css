@@ -1,0 +1,22 @@
+.twitterConnect {
+  background-color: #16213e;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.twitterConnect button {
+  background-color: #1DA1F2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.twitterConnect button:hover {
+  background-color: #1a91da;
+}
+
