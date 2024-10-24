@@ -37,7 +37,7 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
         // "2024-10-23T21:54:29.892+00:00" this is the format of the start time
         // Check if betting is closed (5 minutes after game start)
         const currentTime = Date.now() / 1000;
-        const bettingCloseTime = new Date(gameDetails.start_time).getTime() / 1000 + 600; // 5 minutes after start
+        const bettingCloseTime = new Date(gameDetails.start_time).getTime() / 1000 + 300; // 5 minutes after start
         setIsBettingClosed(currentTime > bettingCloseTime);
 
         // Check if game is over
