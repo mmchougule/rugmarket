@@ -11,7 +11,6 @@ import TokenCard from '../TokenCards/TokenCards';
 import Confetti from 'react-confetti';
 import BetNotifications from '../BetNotification/BetNotification';
 import WheelOfFortune from '../WheelOfFortune/WheelOfFortune';
-import TwitterConnect from '../TwitterConnect/TwitterConnect';
 import { Copy } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import GameAnalytics from '../GameAnalytics/GameAnalytics';
@@ -400,13 +399,12 @@ const PredictionGame = ({ gameAddress }) => {
             {/* {!isTwitterConnected ? <TwitterConnect onConnect={handleTwitterConnect} />
                 : <WheelOfFortune userCredits={userCredits} onSpin={handleSpinResult} />} */}
 
-            {!isTwitterConnected ? (
-                <TwitterConnect onConnect={handleTwitterConnect} />
-            ) : (
+            {isTwitterConnected ? (
                 <>
-                <WheelOfFortune userCredits={userCredits} onSpin={handleSpinResult} />
-                {/* <CreditManager userCredits={userCredits} onCreditChange={handleCreditChange} /> */}
+                    <WheelOfFortune userCredits={userCredits} onSpin={handleSpinResult} />
                 </>
+            ) : (
+                <div>Connect your Twitter account to get 5 free credits!</div>
             )}
 
             {/* <GameAnalytics /> */}

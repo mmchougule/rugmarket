@@ -5,11 +5,16 @@ import Capsule, { Environment, OAuthMethod } from '@usecapsule/web-sdk';
 const capKey = process.env.CAPSULE_API_KEY || '39b56c1ec3b25918324fb27b2b32b203';
 const capsule = new Capsule(Environment.BETA, capKey);
 
+// const DynamicCapsule = dynamic(
+//   () => import('@usecapsule/web-sdk').then((mod) => mod.default),
+//   { ssr: false }
+// );
+
 const TwitterConnect = ({ onConnect = () => {} }) => {
   const oAuthMethod = OAuthMethod.TWITTER;
   const handleConnect = async () => {
     const oAuthUrl = await capsule.getOAuthURL(oAuthMethod);
-    if (typeof window !== 'undefined') {
+    if (window && typeof window !== 'undefined') {
       window.open(oAuthUrl, 'popup', 'width=500,height=600');
     }
     const { email, userExists } = await capsule.waitForOAuth();
