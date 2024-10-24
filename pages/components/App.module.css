@@ -22,6 +22,9 @@
   color: #00FFFF;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   margin-bottom: 10px;
+  background: linear-gradient(45deg, #FF1493, #00FFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .walletButton {
@@ -34,6 +37,13 @@
   transition: all 0.3s ease !important;
   font-size: 14px !important;
   margin: 5px !important;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 .mainContent {

@@ -230,7 +230,6 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
         transition={{ delay: 0.4 }}
       >
         <h3>High Rollers</h3>
-        {bets.length}
         <Leaderboard game={gameDetails} tokenDetails={tokenDetails} bets={bets} />
       </motion.div>
 

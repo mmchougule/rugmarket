@@ -9,6 +9,7 @@
     padding: 20px;
     font-family: 'Inter', sans-serif;
     position: relative;
+    background: linear-gradient(135deg, #0f0f1e, #1a1a2e);
 }
 
 .winnerOverlay {
@@ -51,6 +52,9 @@
   font-size: 28px;
   color: #00FFFF;
   margin-bottom: 10px;
+  background: linear-gradient(45deg, #FF1493, #00FFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .gameInfo {
@@ -208,6 +212,12 @@
   color: #151521;
   cursor: pointer;
   transition: all 0.3s ease;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.5); }
 }
 
 .betButton:hover {

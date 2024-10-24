@@ -9,6 +9,7 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
+  background: linear-gradient(135deg, #1a1a2e, #0f0f1e);
 }
 
 .title {
@@ -16,6 +17,9 @@
   text-align: center;
   margin-bottom: 20px;
   color: #00ff9d;
+  background: linear-gradient(45deg, #FF1493, #00FFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .mainContent {
@@ -126,6 +130,13 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 .betButton:hover {

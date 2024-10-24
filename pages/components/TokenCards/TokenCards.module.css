@@ -6,9 +6,9 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid #2d2d44;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
-  height: 100%;
+  /* max-height: 500px; */
   justify-content: space-between;
 }
 
