@@ -31,8 +31,12 @@ const GameResults = ({ previousGame, onClose }) => {
       const totalPlayers = previousGameDetails?.bets?.length;
     //   console.log(previousGameDetails);console.log(previousGameDetails?.winningToken)
       setWinningToken(previousGame.winning_token);
-      setTotalPot(totalPot);
-      setTotalPlayers(totalPlayers);
+      if (totalPot > 0) {
+        setTotalPot(totalPot);
+      }
+      if (totalPlayers > 0) {
+        setTotalPlayers(totalPlayers);
+      }
       if (winningBets.length > 0) {
         setWinnings(calculateWinnings(winningBets[0]));
       }
