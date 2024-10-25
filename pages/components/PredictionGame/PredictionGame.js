@@ -16,6 +16,7 @@ import { supabase } from '../../../lib/supabase';
 import SwipeableTokenCards from '../SwipeableTokenCards/SwipeableTokenCards';
 import { initializeUserWithTwitter, fetchGameRoundDetails, getProgram } from '../../../lib/anchor-client';
 import SwipeTutorial from '../SwipeTutorial/SwipeTutorial';
+import TokenBattleAnimation from '../TokenBattleAnimation/TokenBattleAnimation';
 
 const PredictionGame = ({ gameAddress }) => {
     const wallet = useAnchorWallet();
@@ -32,10 +33,14 @@ const PredictionGame = ({ gameAddress }) => {
     const [hasFreeBet, setHasFreeBet] = useState(false);
     const [isTwitterConnected, setIsTwitterConnected] = useState(false);
     const [placeBetFunction, setPlaceBetFunction] = useState(null);
+    const [showBattleAnimation, setShowBattleAnimation] = useState(false);
+    const [showMainUI, setShowMainUI] = useState(false);
 
     useEffect(() => {
         fetchGameDetails();
         fetchUserDetails();
+        setShowBattleAnimation(true);
+        setShowMainUI(false);
 
         const gameSubscription = supabase
             .channel('game_rounds_changes')
@@ -254,6 +259,12 @@ const PredictionGame = ({ gameAddress }) => {
         addNotification(`Swiped ${direction} on ${token.name}`, gameAddress);
         // Implement your betting logic here
     };
+
+    const handleAnimationComplete = () => {
+        setShowBattleAnimation(false);
+        setShowMainUI(true);
+    };
+
     if (!gameDetails || !tokenDetails.length) return <div className={styles.loading}>Loading...</div>;
 
     const winningToken = tokenDetails.find(token => token.mint === gameDetails?.winning_token);
@@ -420,6 +431,24 @@ const PredictionGame = ({ gameAddress }) => {
             {/* <GameAnalytics /> */}
 
             <BetNotifications notifications={notifications} />
+
+            {showBattleAnimation && tokenDetails.length >= 2 && (
+                <TokenBattleAnimation 
+                    tokens={tokenDetails.slice(0, 2)} 
+                    onComplete={handleAnimationComplete} 
+                />
+            )}
+
+            {showMainUI && (
+                <>
+                    <SwipeableTokenCards
+                        tokens={tokenDetails}
+                        onSwipe={handleSwipe}
+                        onPlaceBet={handlePlaceBet}
+                    />
+                    {/* ... rest of your UI components */}
+                </>
+            )}
         </div>
     );
 };
