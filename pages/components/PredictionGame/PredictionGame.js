@@ -15,6 +15,7 @@ import { Copy } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import SwipeableTokenCards from '../SwipeableTokenCards/SwipeableTokenCards';
 import { initializeUserWithTwitter, fetchGameRoundDetails, getProgram } from '../../../lib/anchor-client';
+import SwipeTutorial from '../SwipeTutorial/SwipeTutorial';
 
 const PredictionGame = ({ gameAddress }) => {
     const wallet = useAnchorWallet();
@@ -276,6 +277,7 @@ const PredictionGame = ({ gameAddress }) => {
                         <span>Total Pot: {gameDetails.treasury || 0} SOL</span>
                     </div>
                 </div>
+                <SwipeTutorial />
             </div>
 
             <div className={styles.content}>

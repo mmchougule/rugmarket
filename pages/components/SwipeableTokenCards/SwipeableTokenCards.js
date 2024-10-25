@@ -59,6 +59,8 @@ const SwipeableTokenCards = ({ tokens, onSwipe, onPlaceBet }) => {
     setSelectedToken(null);
   };
 
+  if (!tokens) return null;
+
   return (
     <div className={styles.swipeContainer}>
       <div className={`${styles.cardContainer} ${selectedToken ? styles.blurred : ''}`}>
