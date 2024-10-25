@@ -12,7 +12,6 @@ const TokenBattleAnimation = ({ tokens, onComplete }) => {
     };
 
     useEffect(() => {
-        if (controls1 && controls2) {
         const animateTokens = async () => {
             // Wait for 1 second
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -25,10 +24,8 @@ const TokenBattleAnimation = ({ tokens, onComplete }) => {
 
             // Shake animation
             for (let i = 0; i < 5; i++) {
-                await Promise.all([
-                    controls1.start(shakeAnimation),
-                    controls2.start(shakeAnimation)
-                ]);
+                await controls1.start(shakeAnimation);
+                await controls2.start(shakeAnimation);
             }
 
             // Wait for 1 more second
@@ -36,9 +33,9 @@ const TokenBattleAnimation = ({ tokens, onComplete }) => {
 
             // Call onComplete after animation
             onComplete();
-            };
-            animateTokens();
-        }
+        };
+
+        animateTokens();
     }, [controls1, controls2, onComplete]);
 
     return (
