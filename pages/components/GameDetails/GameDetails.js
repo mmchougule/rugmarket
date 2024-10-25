@@ -12,7 +12,7 @@ import { supabase } from '../../../lib/supabase';
 
 const lamportsToSol = (lamports) => lamports / 10 ** 9;
 
-const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, userCredits, bets }) => {
+const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, userCredits, bets, setPlaceBetFunction }) => {
   const wallet = useAnchorWallet();
   const [tokenDetails, setTokenDetails] = useState([]);
   const [betAmount, setBetAmount] = useState('');
@@ -54,6 +54,14 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
   useEffect(() => {
     checkFreeBetEligibility();
   }, []);
+  const handleSwipe = (token, direction) => {
+    // Handle the swipe action
+    // This is where you'd implement the betting logic
+    // console.log(`Swiped ${direction} on ${token.name}`);
+    // show toast notification
+    addNotification(`Swiped ${direction} on ${token.name}`, gameAddress);
+    // Implement your betting logic here
+};
 
   const checkFreeBetEligibility = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -69,35 +77,26 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
     }
   };
 
-  const handlePlaceBet = async () => {
-    // if (betAmount > userCredits) {
-    //   alert('Not enough credits to place this bet. Please add more credits or reduce your bet amount.');
-    //   return;
-    // }
-
-    // if using credits. allow users to place bets from their credits.
-    // they still have to pay for the transaction fee.
-    // const newCredits = userCredits - betAmount;
-    // check if free bet is available.
-
-    if (!wallet || !selectedToken || !betAmount) return;
+  const handlePlaceBet = async (token, direction, amount) => {
+    // console.log('in handlePlaceBet', token, direction, amount);
+    if (!wallet || !token || !amount) return;
 
     setIsLoading(true);
     setPlaceBetMessage('');
 
     try {
       if (isBettingClosed) {
-        throw new Error('Betting is closed for this game');
+        return 'Betting is closed for this game';
       }
 
-      const betAmountLamports = parseFloat(betAmount) * 10 ** 9;
+      const betAmountLamports = parseFloat(amount) * 10 ** 9;
       const program = getProgram(wallet);
-      const tx = await placeBet(program, wallet, new PublicKey(gameAddress), new PublicKey(selectedToken), betAmountLamports);
+      const tx = await placeBet(program, wallet, new PublicKey(gameAddress), new PublicKey(token.mint), betAmountLamports);
       setPlaceBetMessage(tx);
 
       if (hasFreeBet && userCredits > 0) {
         // Update the user's profile to mark the free bet as used
-        const newCredits = hasFreeBet ? userCredits : userCredits - betAmount;
+        const newCredits = hasFreeBet ? userCredits : userCredits - amount;
         await supabase
           .from('user_credits')
           .update({ credits: newCredits, has_free_bet: false, free_bet_used: true })
@@ -106,11 +105,21 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
       }
     } catch (error) {
       console.error('Error placing bet:', error);
-      setPlaceBetMessage(`Error: ${error.message}`);
+      if (error.message === 'User rejected the request.') {
+        setPlaceBetMessage('Transaction cancelled by user.');
+      } else {
+        setPlaceBetMessage(`Error: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Use useEffect to set the handlePlaceBet function
+  useEffect(() => {
+    console.log('Setting handlePlaceBet in GameDetails');
+    setPlaceBetFunction(() => handlePlaceBet);
+  }, [setPlaceBetFunction]);
 
   const shakeAnimation = {
     shake: {
@@ -136,7 +145,6 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      
       <motion.div 
         className={styles.betInputSection}
         initial={{ opacity: 0, scale: 0.9 }}
@@ -210,7 +218,7 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
               className={styles.betButton}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={handlePlaceBet}
+              onClick={() => handlePlaceBet(selectedToken, direction, betAmount)}
               disabled={isLoading || isBettingClosed || !selectedToken || !betAmount}
               animate={isBettingClosed ? "disabled" : "shake"}
               variants={shakeAnimation}
@@ -238,6 +246,11 @@ const GameDetails = ({ gameAddress, selectedToken, gameDetails, setGameDetails, 
           You have a free bet available!
         </div>
       )}
+
+      {/* <SwipeableTokenCards 
+        tokens={tokenDetails} 
+        onPlaceBet={handlePlaceBet}
+      /> */}
     </motion.div>
   );
 };
@@ -264,4 +277,3 @@ const modalMessage = (message) => {
     </motion.div>
   )
 }
-

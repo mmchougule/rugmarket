@@ -13,8 +13,7 @@ import BetNotifications from '../BetNotification/BetNotification';
 import WheelOfFortune from '../WheelOfFortune/WheelOfFortune';
 import { Copy } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
-import GameAnalytics from '../GameAnalytics/GameAnalytics';
-import CreditManager from '../CreditManager/CreditManager';
+import SwipeableTokenCards from '../SwipeableTokenCards/SwipeableTokenCards';
 import { initializeUserWithTwitter, fetchGameRoundDetails, getProgram } from '../../../lib/anchor-client';
 
 const PredictionGame = ({ gameAddress }) => {
@@ -31,6 +30,7 @@ const PredictionGame = ({ gameAddress }) => {
     const [userCredits, setUserCredits] = useState(0);
     const [hasFreeBet, setHasFreeBet] = useState(false);
     const [isTwitterConnected, setIsTwitterConnected] = useState(false);
+    const [placeBetFunction, setPlaceBetFunction] = useState(null);
 
     useEffect(() => {
         fetchGameDetails();
@@ -73,6 +73,15 @@ const PredictionGame = ({ gameAddress }) => {
             fetchTokenDetails();
         }
     }, [gameDetails]);
+
+
+    const handlePlaceBet = (token, direction, amount) => {
+        if (placeBetFunction) {
+            placeBetFunction(token, direction, amount);
+        } else {
+            console.error('placeBetFunction is not set');
+        }
+    };
 
     const fetchGameDetails = async () => {
         // first get game details from solana program
@@ -236,44 +245,22 @@ const PredictionGame = ({ gameAddress }) => {
             setShowWinnerAnimation(false);
         }, 5000);
     };
-
+    const handleSwipe = (token, direction) => {
+        // Handle the swipe action
+        // This is where you'd implement the betting logic
+        console.log(`Swiped ${direction} on ${token.name}`);
+        // show toast notification
+        addNotification(`Swiped ${direction} on ${token.name}`, gameAddress);
+        // Implement your betting logic here
+    };
     if (!gameDetails || !tokenDetails.length) return <div className={styles.loading}>Loading...</div>;
 
     const winningToken = tokenDetails.find(token => token.mint === gameDetails?.winning_token);
 
     return (
         <div className={styles.gameContainer}>
-            <AnimatePresence>
-                {showWinnerAnimation && false && (
-                    <motion.div
-                        className={styles.winnerOverlay}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >
-                        <Confetti />
-                        <motion.div
-                            className={styles.winnerCard}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                        >
-                            <h2>Winner: {winningToken.name}</h2>
-                            <img src={winningToken.image_uri} alt={winningToken.name} className={styles.winnerTokenImage} />
-                            <p>Final Market Cap: ${winningToken.usd_market_cap.toFixed(2)}</p>
-                            <motion.button onClick={() => setShowWinnerAnimation(false)}>Close</motion.button>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            {/* <WheelOfFortune 
-                tokens={tokenDetails} 
-                onSpinComplete={handleSpinComplete} 
-            /> */}
-
             <div className={styles.header}>
-                <h1 className={styles.title}>who will get rekt first?</h1>
-                <span>Total bets: {bets.length}</span>
+                <h1 className={styles.title}>Who will get rekt first?</h1>
                 <div className={styles.gameInfo}>
                     <div className={styles.infoItem}>
                         <Clock className={styles.icon} />
@@ -290,10 +277,30 @@ const PredictionGame = ({ gameAddress }) => {
                     </div>
                 </div>
             </div>
-            
+
             <div className={styles.content}>
-                <div className={styles.tokenSection}>
-                    {tokenDetails.map((token, index) => (
+                <div className={styles.swipeableCardsContainer}>
+                    <SwipeableTokenCards
+                        tokens={tokenDetails}
+                        onSwipe={handleSwipe}
+                        onPlaceBet={handlePlaceBet}
+                    />
+                </div>
+                
+                <div className={styles.gameDetailsContainer}>
+                    <GameDetails
+                        gameAddress={gameAddress}
+                        selectedToken={selectedToken}
+                        gameDetails={gameDetails}
+                        setGameDetails={setGameDetails}
+                        bets={bets}
+                        userCredits={userCredits}
+                        setPlaceBetFunction={setPlaceBetFunction}
+                    />
+                </div>
+
+                {/* <div className={styles.tokenSection}> */}
+                    {/* {tokenDetails.map((token, index) => (
                         <TokenCard
                             key={index}
                             token={token}
@@ -301,9 +308,10 @@ const PredictionGame = ({ gameAddress }) => {
                             onSelect={handleTokenSelect}
                             isWinner={winningToken?.mint === token?.mint}
                         />
-                    ))}
-                </div>
-                {!gameDetails.status.ended && (
+                    ))} */}
+                {/* </div> */}
+            
+                {/* {!gameDetails.status.ended && (
                     <div className={styles.gameDetails}>
                         <GameDetails
                             gameAddress={gameAddress}
@@ -313,7 +321,7 @@ const PredictionGame = ({ gameAddress }) => {
                             bets={bets}
                         />
                     </div>
-                )}
+                )} */}
                 {gameDetails.status.ended && (
                 <div className={styles.resultsSection}>
                     {/* <div className={styles.winningToken}>

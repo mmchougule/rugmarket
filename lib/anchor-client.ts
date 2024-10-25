@@ -150,8 +150,15 @@ export const placeBet = async (program: Program, wallet: AnchorWallet, gameAddre
         return tx;
       }
     } catch (error) {
-      console.error("Error placing bet:", error);
-      throw error;
+      if (error.message === 'User rejected the request.') {
+        console.log('User cancelled the transaction');
+        // throw error; // Re-throw the error to be caught in the component
+        return 'Transaction cancelled by user.';
+      } else {
+        console.error("Error placing bet:", error);
+        // throw error;
+        return error.message;
+      }
     }
 };
  

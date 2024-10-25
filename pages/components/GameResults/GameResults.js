@@ -36,7 +36,7 @@ const GameResults = ({ previousGame, onClose }) => {
       if (totalPlayers > 0) {
         setTotalPlayers(totalPlayers);
       }
-      if (winningBets.length > 0) {
+      if (winningBets && winningBets.length > 0) {
         setWinningBets(winningBets);
         setWinnings(calculateWinnings(winningBets[0]));
       }

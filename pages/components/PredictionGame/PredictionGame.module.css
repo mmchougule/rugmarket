@@ -10,6 +10,9 @@
     font-family: 'Inter', sans-serif;
     position: relative;
     background: linear-gradient(135deg, #0f0f1e, #1a1a2e);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .winnerOverlay {
@@ -55,6 +58,7 @@
   background: linear-gradient(45deg, #FF1493, #00FFFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-align: center;
 }
 
 .gameInfo {
@@ -64,7 +68,8 @@
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 20px;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .infoItem {
@@ -79,20 +84,25 @@
 
 .content {
   display: flex;
+  flex-direction: column;
   gap: 20px;
+  flex-grow: 1;
 }
 
-.tokenSection {
-  display: flex;
-  /* flex-wrap: wrap; */
-  gap: 15px;
-  flex: 2;
+.swipeableCardsContainer {
+  flex: 1;
+  /* max-height: 400px; */
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
 }
 
-.gameDetails {
+.gameDetailsContainer {
   flex: 1;
   min-width: 300px;
   max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .betInputSection {
@@ -238,9 +248,29 @@
   color: #00FFFF;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .content {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .swipeableCardsContainer {
+    flex: 2;
+  }
+
+  .gameDetailsContainer {
+    flex: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .gameInfo {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .infoItem {
+    margin-bottom: 5px;
   }
 }
 

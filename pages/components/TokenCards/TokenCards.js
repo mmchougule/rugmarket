@@ -4,6 +4,42 @@ import { Twitter, Globe, TrendingUp, TrendingDown } from 'lucide-react';
 import styles from './TokenCards.module.css';
 import DynamicTimestamp from '../DynamicTimestamp';
 
+
+const TokenCard2 = ({ token }) => {
+  const priceChange = ((token.currentPrice - token.openPrice) / token.openPrice * 100).toFixed(2);
+
+  return (
+    <motion.div
+      className={styles.tokenCard}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <div className={styles.cardHeader}>
+        <img src={token.imageUrl} alt={token.name} className={styles.tokenImage} />
+        <h3 className={styles.tokenName}>{token.name}</h3>
+        <span className={styles.tokenSymbol}>{token.symbol}</span>
+      </div>
+      <div className={styles.tokenDetails}>
+        <p className={styles.tokenPrice}>${token.currentPrice.toFixed(2)}</p>
+        <p className={`${styles.tokenChange} ${priceChange >= 0 ? styles.positive : styles.negative}`}>
+          {priceChange >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+          {Math.abs(priceChange)}%
+        </p>
+      </div>
+      <div className={styles.tokenStats}>
+        <div className={styles.stat}>
+          <span className={styles.statLabel}>Market Cap</span>
+          <span className={styles.statValue}>${token.marketCap.toLocaleString()}</span>
+        </div>
+        <div className={styles.stat}>
+          <span className={styles.statLabel}>Volume (24h)</span>
+          <span className={styles.statValue}>${token.volume24h.toLocaleString()}</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const TokenCard = ({ token, isSelected, onSelect, isWinner, newEvent }) => {
   const [currentData, setCurrentData] = useState(null);
   const [candleStickData, setCandleStickData] = useState(null);
@@ -45,26 +81,46 @@ const TokenCard = ({ token, isSelected, onSelect, isWinner, newEvent }) => {
   return (
     <motion.div
       className={`${styles.tokenCard} ${isSelected ? styles.selected : ''}`}
-      onClick={() => onSelect(token.mint)}
       animate={controls}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
-      <div className={styles.cardHeader}>
+      <motion.div 
+        className={styles.cardHeader}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <h3 className={styles.tokenName}>{token.name}
         {isWinner && ' - Winner'}
         </h3>
         <span className={styles.tokenSymbol}>Ticker: {token.symbol}</span>
         <p className={styles.positive}>Market Cap: ${currentData.usd_market_cap?.toFixed(2)}</p>
-        <img src={currentData.image_uri} alt={token.name} className={styles.tokenImage} />
-      </div>
-      <p className={`${styles.tokenChange} ${priceChange >= 0 ? styles.positive : styles.negative}`}>
+        <motion.img 
+          src={currentData.image_uri} 
+          alt={token.name} 
+          className={styles.tokenImage}
+          whileHover={{ rotate: 360 }}
+          transition={{ duration: 0.5 }}
+        />
+      </motion.div>
+      <motion.p 
+        className={`${styles.tokenChange} ${priceChange >= 0 ? styles.positive : styles.negative}`}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         {priceChange >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
         {priceChange}%
-      </p>
-      <div className={styles.tokenDetails}>
+      </motion.p>
+      <motion.div 
+        className={styles.tokenDetails}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
         <p className={styles.description}>{token.description}</p>
-      </div>
+      </motion.div>
       <div className={styles.socialLinks}>
         <a href={`https://pump.fun/${token.mint}`} target="_blank" rel="noopener noreferrer">
           <p className={styles.pumpFunLink}>view on Pump.fun</p>

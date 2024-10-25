@@ -235,7 +235,7 @@ function AppContent() {
             <PredictionGame key={selectedGame} gameAddress={selectedGame} />
           )}
         </AnimatePresence>
-        <LastGameResults previousGame={previousGame} />
+        {previousGame && <LastGameResults previousGame={previousGame} />}
         <section className={styles.gameSection}>
           <h2 className={styles.sectionTitle}>Recent Rounds</h2>
           <GameList games={activeGames} onSelectGame={setSelectedGame} />

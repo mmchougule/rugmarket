@@ -64,7 +64,7 @@ const WheelOfFortune = ({ userCredits, onSpin }) => {
 
   return (
     <div className={styles.wheelOfFortune}>
-      <h2>Wheel of Fortune</h2>
+      <h2>Spin & Win</h2>
       <div className={styles.wheelContainer}>
         <Wheel
           mustStartSpinning={mustSpin}
