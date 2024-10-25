@@ -25,7 +25,6 @@ const GameResults = ({ previousGame, onClose }) => {
       setPreviousGameDetails(gameDetails);
       console.log(previousGameDetails)
       const winningBets = previousGameDetails?.bets?.filter(bet => bet.token.toString() === previousGame.winning_token?.toString());
-      setWinningBets(winningBets);
     //   console.log(winningBets)
       const totalPot = parseInt(previousGameDetails?.treasury) / 1e9; // Convert from lamports to SOL
       const totalPlayers = previousGameDetails?.bets?.length;
@@ -38,6 +37,7 @@ const GameResults = ({ previousGame, onClose }) => {
         setTotalPlayers(totalPlayers);
       }
       if (winningBets.length > 0) {
+        setWinningBets(winningBets);
         setWinnings(calculateWinnings(winningBets[0]));
       }
     }
@@ -92,7 +92,7 @@ const GameResults = ({ previousGame, onClose }) => {
             {winningBets?.map((bet, index) => (
                 <div key={index} className={styles.winnerItem}>
                 <p>{bet?.user?.toString().slice(0, 4)}...{bet?.user?.toString().slice(-4)}</p>
-                <p>{calculateWinnings(bet)} SOL</p>
+                <p>{bet?.amount / 1e9} SOL</p>
                 </div>
             ))}
             </div>
