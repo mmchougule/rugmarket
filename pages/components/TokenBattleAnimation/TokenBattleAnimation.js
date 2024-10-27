@@ -45,7 +45,7 @@ const TokenBattleAnimation = ({ tokens, onComplete }) => {
                 initial={{ x: '-100%' }}
                 animate={controls1}
             >
-                <img src={tokens[0].image_uri} alt={tokens[0].name} />
+                <img src={tokens?.[0]?.image_uri} alt={tokens?.[0]?.name} />
             </motion.div>
             
             <motion.div
@@ -53,7 +53,7 @@ const TokenBattleAnimation = ({ tokens, onComplete }) => {
                 initial={{ x: '100%' }}
                 animate={controls2}
             >
-                <img src={tokens[1].image_uri} alt={tokens[1].name} />
+                <img src={tokens?.[1]?.image_uri} alt={tokens?.[1]?.name} />
             </motion.div>
             <motion.div
                 className={styles.fightText}
